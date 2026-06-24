@@ -1,0 +1,19 @@
+README.md
+  s_8bdde395151d69::t_2a995b0814ac91 1,3,5,9,17-21,23,27,29,32,34,38,42,47,49,51-57,59,61,65,67-69,71-72,77,79
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.11",
+  "base_commit_sha": "9333222701cb1fdc3dde542c196eafcea387ac3c",
+  "prompts": {},
+  "sessions": {
+    "s_8bdde395151d69": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48df66c2-4716-49ee-b70a-c9d25934d822",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "mandeepmourya007 <mandeepmourya007@gmail.com>"
+    }
+  }
+}
