@@ -22,10 +22,12 @@ class MovieFilter(django_filters.FilterSet):
     """
 
     genre = django_filters.NumberFilter(field_name="genres__id", label="Genre ID")
+    genre_slug = django_filters.CharFilter(field_name="genres__slug", lookup_expr="exact", label="Genre slug")
     genre_name = django_filters.CharFilter(
         field_name="genres__name", lookup_expr="icontains", label="Genre name (partial)"
     )
     director = django_filters.NumberFilter(field_name="director__id", label="Director ID")
+    director_slug = django_filters.CharFilter(field_name="director__slug", lookup_expr="exact", label="Director slug")
     actor = django_filters.NumberFilter(field_name="actors__id", label="Actor ID")
     release_year = django_filters.NumberFilter(label="Exact release year")
     year_min = django_filters.NumberFilter(field_name="release_year", lookup_expr="gte", label="Year >=")
@@ -33,7 +35,7 @@ class MovieFilter(django_filters.FilterSet):
 
     class Meta:
         model = Movie
-        fields = ["genre", "genre_name", "director", "actor", "release_year", "year_min", "year_max"]
+        fields = ["genre", "genre_slug", "genre_name", "director", "director_slug", "actor", "release_year", "year_min", "year_max"]
 
 
 class ActorFilter(django_filters.FilterSet):

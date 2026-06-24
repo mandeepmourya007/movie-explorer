@@ -9,13 +9,13 @@ import FilterBar from '@/components/FilterBar.vue'
 import type { Genre, DirectorMinimal, MovieFilters } from '@/types'
 
 const genres: Genre[] = [
-  { id: 1, name: 'Action' },
-  { id: 2, name: 'Drama' },
+  { id: 1, slug: 'action', name: 'Action' },
+  { id: 2, slug: 'drama', name: 'Drama' },
 ]
 
 const directors: DirectorMinimal[] = [
-  { id: 1, name: 'Director One', photo_url: '' },
-  { id: 2, name: 'Director Two', photo_url: '' },
+  { id: 1, slug: 'director-one', name: 'Director One', photo_url: '' },
+  { id: 2, slug: 'director-two', name: 'Director Two', photo_url: '' },
 ]
 
 const emptyFilters: MovieFilters = {}
@@ -58,6 +58,13 @@ describe('FilterBar', () => {
     expect(wrapper.text()).toContain('Clear filters')
   })
 
+  it('shows clear button when genre_slug filter is active', async () => {
+    const wrapper = mount(FilterBar, {
+      props: { genres, directors, modelValue: { genre_slug: 'action' } },
+    })
+    expect(wrapper.text()).toContain('Clear filters')
+  })
+
   it('emits update:modelValue on search input', async () => {
     const wrapper = mount(FilterBar, {
       props: { genres, directors, modelValue: emptyFilters },
@@ -67,5 +74,14 @@ describe('FilterBar', () => {
     const emitted = wrapper.emitted('update:modelValue')
     expect(emitted).toBeTruthy()
     expect((emitted?.[0]?.[0] as MovieFilters).search).toBe('Inception')
+  })
+
+  it('genre options use slug as value', () => {
+    const wrapper = mount(FilterBar, {
+      props: { genres, directors, modelValue: emptyFilters },
+    })
+    const options = wrapper.find('select').findAll('option')
+    const actionOption = options.find((o) => o.text() === 'Action')
+    expect(actionOption?.element.value).toBe('action')
   })
 })

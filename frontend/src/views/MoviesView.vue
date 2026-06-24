@@ -1,6 +1,6 @@
 <!--
   MoviesView — the home page.
-  Shows a search/filter bar at the top and a responsive grid of MovieCards below.
+  Filters are synced with URL query params so they are bookmarkable and shareable.
   All filtering is done on the backend (filters are sent as query params).
 -->
 <template>
@@ -34,26 +34,17 @@
     <template v-else>
       <p class="text-sm text-gray-500 mb-4">{{ total }} result{{ total !== 1 ? 's' : '' }}</p>
 
-      <!-- Responsive grid — 2 cols on mobile, up to 5 on wide screens -->
       <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
         <MovieCard v-for="movie in movies" :key="movie.id" :movie="movie" />
       </div>
 
       <!-- Pagination -->
       <div v-if="totalPages > 1" class="flex justify-center items-center gap-3 mt-8">
-        <button
-          class="btn-outline"
-          :disabled="currentPage === 1"
-          @click="goTo(currentPage - 1)"
-        >
+        <button class="btn-outline" :disabled="currentPage === 1" @click="goTo(currentPage - 1)">
           ← Prev
         </button>
         <span class="text-sm text-gray-500">{{ currentPage }} / {{ totalPages }}</span>
-        <button
-          class="btn-outline"
-          :disabled="currentPage === totalPages"
-          @click="goTo(currentPage + 1)"
-        >
+        <button class="btn-outline" :disabled="currentPage === totalPages" @click="goTo(currentPage + 1)">
           Next →
         </button>
       </div>
@@ -63,6 +54,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { fetchDirectors, fetchGenres, fetchMovies } from '@/api/catalog'
 import type { DirectorMinimal, Genre, MovieFilters, MovieList } from '@/types'
 import FilterBar from '@/components/FilterBar.vue'
@@ -72,13 +64,23 @@ import EmptyState from '@/components/EmptyState.vue'
 
 const PAGE_SIZE = 12
 
+const route   = useRoute()
+const router  = useRouter()
 const movies  = ref<MovieList[]>([])
 const genres  = ref<Genre[]>([])
 const directors = ref<DirectorMinimal[]>([])
 const total   = ref(0)
 const loading = ref(false)
 const error   = ref<string | null>(null)
-const filters = reactive<MovieFilters>({ page: 1 })
+
+// Initialise from URL query params so shared/bookmarked links restore filters
+const filters = reactive<MovieFilters>({
+  page:         Number(route.query.page) || 1,
+  search:       (route.query.search as string) || undefined,
+  genre_slug:   (route.query.genre_slug as string) || undefined,
+  director_slug:(route.query.director_slug as string) || undefined,
+  release_year: route.query.release_year ? Number(route.query.release_year) : undefined,
+})
 
 const currentPage = computed(() => filters.page ?? 1)
 const totalPages  = computed(() => Math.ceil(total.value / PAGE_SIZE))
@@ -99,12 +101,25 @@ const load = async () => {
 
 const goTo = (page: number) => { filters.page = page }
 
-// Debounce so typing in the search box doesn't fire on every keystroke
+// Sync filters → URL query params + debounced API call
 let timer: ReturnType<typeof setTimeout>
-watch(filters, () => { clearTimeout(timer); timer = setTimeout(load, 300) }, { deep: true })
+watch(filters, () => {
+  clearTimeout(timer)
+  timer = setTimeout(() => {
+    router.replace({
+      query: {
+        ...(filters.search       ? { search: filters.search }             : {}),
+        ...(filters.genre_slug   ? { genre_slug: filters.genre_slug }     : {}),
+        ...(filters.director_slug? { director_slug: filters.director_slug}: {}),
+        ...(filters.release_year ? { release_year: String(filters.release_year) } : {}),
+        ...(filters.page && filters.page > 1 ? { page: String(filters.page) } : {}),
+      },
+    })
+    load()
+  }, 300)
+}, { deep: true })
 
 onMounted(async () => {
-  // Load dropdowns + first page of movies in parallel
   const [genreData, directorData] = await Promise.all([
     fetchGenres(),
     fetchDirectors({ page_size: 200 }),

@@ -1,14 +1,3 @@
-<!--
-  FilterBar — search and filter controls for the movies list.
-
-  Props (v-model):
-    modelValue — MovieFilters object (search, genre, director, release_year)
-    genres     — list of Genre options for the dropdown
-    directors  — list of DirectorMinimal options for the dropdown
-
-  Emits update:modelValue whenever any control changes.
-  All filtering happens on the backend — this component only sends query params.
--->
 <template>
   <div class="card p-4">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -25,21 +14,21 @@
         />
       </div>
 
-      <!-- Filter by genre -->
+      <!-- Filter by genre (slug) -->
       <div>
         <label class="block text-xs text-gray-500 mb-1">Genre</label>
-        <select v-model="local.genre" class="form-control" @change="emit">
+        <select v-model="local.genre_slug" class="form-control" @change="emit">
           <option :value="undefined">All genres</option>
-          <option v-for="g in genres" :key="g.id" :value="g.id">{{ g.name }}</option>
+          <option v-for="g in genres" :key="g.slug" :value="g.slug">{{ g.name }}</option>
         </select>
       </div>
 
-      <!-- Filter by director -->
+      <!-- Filter by director (slug) -->
       <div>
         <label class="block text-xs text-gray-500 mb-1">Director</label>
-        <select v-model="local.director" class="form-control" @change="emit">
+        <select v-model="local.director_slug" class="form-control" @change="emit">
           <option :value="undefined">All directors</option>
-          <option v-for="d in directors" :key="d.id" :value="d.id">{{ d.name }}</option>
+          <option v-for="d in directors" :key="d.slug" :value="d.slug">{{ d.name }}</option>
         </select>
       </div>
 
@@ -84,20 +73,18 @@ const props = defineProps<{
 
 const emits = defineEmits<{ 'update:modelValue': [MovieFilters] }>()
 
-// Local copy — avoids re-rendering parent on every keystroke
 const local = reactive<MovieFilters>({ ...props.modelValue })
 
-// Keep local in sync if parent resets filters externally
 watch(() => props.modelValue, (v) => Object.assign(local, v), { deep: true })
 
 const hasFilters = computed(
-  () => !!local.search || !!local.genre || !!local.director || !!local.release_year
+  () => !!local.search || !!local.genre_slug || !!local.director_slug || !!local.release_year
 )
 
 const emit = () => emits('update:modelValue', { ...local, page: 1 })
 
 const clear = () => {
-  Object.assign(local, { search: undefined, genre: undefined, director: undefined, release_year: undefined })
+  Object.assign(local, { search: undefined, genre_slug: undefined, director_slug: undefined, release_year: undefined })
   emit()
 }
 </script>

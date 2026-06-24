@@ -71,8 +71,8 @@ export interface PaginatedResponse<T> {
 /** Query params accepted by the movies endpoint. */
 export interface MovieFilters {
   search?: string
-  genre?: number
-  director?: number
+  genre_slug?: string
+  director_slug?: string
   actor?: number
   release_year?: number
   year_min?: number
