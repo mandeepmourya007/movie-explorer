@@ -2,12 +2,21 @@ import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 
 const STORAGE_KEY = 'movie-explorer-favorites'
+const STORAGE_VERSION = 'v2' // bump when storage schema changes (clears stale data)
+const VERSION_KEY = 'movie-explorer-favorites-version'
 
 const loadFromStorage = (): Set<string> => {
   try {
+    // Clear stale data from older versions (e.g. numeric IDs stored before slug migration)
+    if (localStorage.getItem(VERSION_KEY) !== STORAGE_VERSION) {
+      localStorage.removeItem(STORAGE_KEY)
+      localStorage.setItem(VERSION_KEY, STORAGE_VERSION)
+      return new Set()
+    }
     const raw = localStorage.getItem(STORAGE_KEY)
     const parsed: string[] = raw ? JSON.parse(raw) : []
-    return new Set(parsed)
+    // Guard: drop any non-string entries left from old format
+    return new Set(parsed.filter((v) => typeof v === 'string' && v.includes('-')))
   } catch {
     return new Set()
   }
