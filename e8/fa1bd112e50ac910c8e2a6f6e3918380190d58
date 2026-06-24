@@ -1,0 +1,29 @@
+frontend/src/views/MoviesView.vue
+  s_8bdde395151d69::t_9865bd5e4ad9ab 3,43,47,57,67-68,75-83,104,106-120
+backend/catalog/filters.py
+  s_8bdde395151d69::t_fea6e12ecfa609 38
+  s_8bdde395151d69::t_411347207c287b 25,30
+frontend/src/types/index.ts
+  s_8bdde395151d69::t_84a0d3d8c5fe2a 74-75
+frontend/src/__tests__/FilterBar.test.ts
+  s_8bdde395151d69::t_8c2c40769689de 12-13,17-18
+  s_8bdde395151d69::t_1070301937a654 61-67,78-86
+frontend/src/components/FilterBar.vue
+  s_8bdde395151d69::t_aa4a61ea6cdd69 17,20,22,26,29,31,81,87
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.11",
+  "base_commit_sha": "e8fa1bd112e50ac910c8e2a6f6e3918380190d58",
+  "prompts": {},
+  "sessions": {
+    "s_8bdde395151d69": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48df66c2-4716-49ee-b70a-c9d25934d822",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "mandeepmourya007 <mandeepmourya007@gmail.com>"
+    }
+  }
+}
