@@ -1,0 +1,19 @@
+backend/catalog/models.py
+  s_8bdde395151d69::t_4fdfe2293b4096 16-17,26,33-34,36-37,46-53,87
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.11",
+  "base_commit_sha": "fb1a5fa40d491e7a311c3f58c082e3b2bbdd21fd",
+  "prompts": {},
+  "sessions": {
+    "s_8bdde395151d69": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48df66c2-4716-49ee-b70a-c9d25934d822",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "mandeepmourya007 <mandeepmourya007@gmail.com>"
+    }
+  }
+}
