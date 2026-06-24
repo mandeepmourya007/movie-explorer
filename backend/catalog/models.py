@@ -13,6 +13,23 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 
+class PersonMixin(models.Model):
+    """Abstract base for person entities (Actor, Director) sharing common fields."""
+
+    name = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=200, unique=True, blank=True)
+    bio = models.TextField(blank=True)
+    birth_date = models.DateField(null=True, blank=True)
+    photo_url = models.URLField(max_length=500, blank=True)
+
+    class Meta:
+        abstract = True
+        ordering = ["name"]
+
+    def __str__(self) -> str:
+        return self.name
+
+
 class Genre(models.Model):
     """A film genre, e.g. Action, Drama, Comedy."""
 
@@ -26,36 +43,12 @@ class Genre(models.Model):
         return self.name
 
 
-class Director(models.Model):
+class Director(PersonMixin):
     """A film director."""
 
-    name = models.CharField(max_length=200)
-    slug = models.SlugField(max_length=200, unique=True, blank=True)
-    bio = models.TextField(blank=True)
-    birth_date = models.DateField(null=True, blank=True)
-    photo_url = models.URLField(max_length=500, blank=True)
 
-    class Meta:
-        ordering = ["name"]
-
-    def __str__(self) -> str:
-        return self.name
-
-
-class Actor(models.Model):
+class Actor(PersonMixin):
     """An actor who appears in movies."""
-
-    name = models.CharField(max_length=200)
-    slug = models.SlugField(max_length=200, unique=True, blank=True)
-    bio = models.TextField(blank=True)
-    birth_date = models.DateField(null=True, blank=True)
-    photo_url = models.URLField(max_length=500, blank=True)
-
-    class Meta:
-        ordering = ["name"]
-
-    def __str__(self) -> str:
-        return self.name
 
 
 class Movie(models.Model):
@@ -91,13 +84,7 @@ class Movie(models.Model):
 
     @property
     def average_rating(self) -> float | None:
-        """
-        Compute the average review rating on-the-fly.
-
-        Returns None when there are no reviews (avoids division by zero).
-        Uses aggregation to hit the DB once.
-        """
-        from django.db.models import Avg  # local import keeps models.py clean
+        from django.db.models import Avg
 
         result = self.reviews.aggregate(avg=Avg("rating"))["avg"]
         return round(result, 1) if result is not None else None
