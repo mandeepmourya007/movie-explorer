@@ -1,0 +1,25 @@
+frontend/src/components/FilterBar.vue
+  s_8bdde395151d69::t_9515d2cd8b1d86 38-41
+  s_8bdde395151d69::t_b6dffc4b64296d 71-73
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.11",
+  "base_commit_sha": "77a71793c2c13b4c8ae456c52a36bd9732bcb72d",
+  "prompts": {},
+  "humans": {
+    "h_b3232c20134322": {
+      "author": "mandeepmourya007 <mandeepmourya007@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_8bdde395151d69": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48df66c2-4716-49ee-b70a-c9d25934d822",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "mandeepmourya007 <mandeepmourya007@gmail.com>"
+    }
+  }
+}
