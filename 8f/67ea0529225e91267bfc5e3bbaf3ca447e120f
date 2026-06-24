@@ -1,0 +1,19 @@
+frontend/src/stores/favorites.ts
+  s_8bdde395151d69::t_96ab9381d9d8dc 5-6,10-15,18-19
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.11",
+  "base_commit_sha": "8f67ea0529225e91267bfc5e3bbaf3ca447e120f",
+  "prompts": {},
+  "sessions": {
+    "s_8bdde395151d69": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48df66c2-4716-49ee-b70a-c9d25934d822",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "mandeepmourya007 <mandeepmourya007@gmail.com>"
+    }
+  }
+}
