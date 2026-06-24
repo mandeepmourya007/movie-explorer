@@ -35,15 +35,10 @@
       <!-- Filter by year -->
       <div>
         <label class="block text-xs text-gray-500 mb-1">Year</label>
-        <input
-          v-model.number="local.release_year"
-          type="number"
-          placeholder="e.g. 2023"
-          min="1900"
-          :max="new Date().getFullYear()"
-          class="form-control"
-          @input="emit"
-        />
+        <select v-model.number="local.release_year" class="form-control" @change="emit">
+          <option :value="undefined">All years</option>
+          <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
+        </select>
       </div>
 
     </div>
@@ -72,6 +67,9 @@ const props = defineProps<{
 }>()
 
 const emits = defineEmits<{ 'update:modelValue': [MovieFilters] }>()
+
+const currentYear = new Date().getFullYear()
+const years = Array.from({ length: currentYear - 1989 }, (_, i) => currentYear - i)
 
 const local = reactive<MovieFilters>({ ...props.modelValue })
 
