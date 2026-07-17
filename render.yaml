@@ -4,8 +4,9 @@ services:
     runtime: docker
     plan: free
     region: oregon
-    dockerfilePath: ./backend/Dockerfile
-    dockerContext: ./backend
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
     healthCheckPath: /api/genres/
     disk:
       name: backend-data
@@ -31,8 +32,9 @@ services:
     runtime: docker
     plan: free
     region: oregon
-    dockerfilePath: ./frontend/Dockerfile
-    dockerContext: ./frontend
+    rootDir: frontend
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
     envVars:
       - key: BACKEND_URL
         fromService:
