@@ -2,13 +2,12 @@ server {
     listen 80;
     server_name _;
 
-    # Resolve the backend hostname per-request (via a public resolver) instead
-    # of once at nginx startup — a bad/unresolvable BACKEND_URL then yields a
-    # 502 on /api/ instead of crashing the whole container on boot.
-    # 127.0.0.11 is Docker Compose's embedded DNS (resolves service names like
-    # "backend" locally); 8.8.8.8/1.1.1.1 are the fallback for public hostnames
-    # (e.g. on Render, where BACKEND_URL is a real onrender.com domain).
-    resolver 127.0.0.11 8.8.8.8 1.1.1.1 ipv6=off valid=30s;
+    # Resolve the backend hostname per-request instead of once at nginx
+    # startup — a bad/unresolvable BACKEND_URL then yields a 502 on /api/
+    # instead of crashing the whole container on boot. RESOLVER_IP is read
+    # from this container's own /etc/resolv.conf at start (see
+    # 15-sanitize-backend-url.envsh) so it's correct in any environment.
+    resolver ${RESOLVER_IP} ipv6=off valid=30s;
 
     root /usr/share/nginx/html;
     index index.html;
@@ -21,9 +20,12 @@ server {
     }
 
     # Proxy API requests to Django backend
+    # $request_uri (not location-prefix rewriting) carries the full original
+    # path+query upstream — nginx doesn't reliably rewrite the URI once a
+    # variable is used in proxy_pass, so this is spelled out explicitly.
     location /api/ {
         set $backend ${BACKEND_URL};
-        proxy_pass ${BACKEND_SCHEME}://$backend/api/;
+        proxy_pass ${BACKEND_SCHEME}://$backend$request_uri;
         proxy_ssl_server_name on;
         proxy_set_header Host $backend;
         proxy_set_header X-Real-IP $remote_addr;
@@ -33,7 +35,7 @@ server {
     # Proxy Swagger / admin requests
     location ~ ^/(api/docs|api/redoc|api/schema|admin)/ {
         set $backend ${BACKEND_URL};
-        proxy_pass ${BACKEND_SCHEME}://$backend;
+        proxy_pass ${BACKEND_SCHEME}://$backend$request_uri;
         proxy_ssl_server_name on;
         proxy_set_header Host $backend;
         proxy_set_header X-Real-IP $remote_addr;

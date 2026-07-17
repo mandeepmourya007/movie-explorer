@@ -27,6 +27,8 @@ COPY --from=build /app/dist /usr/share/nginx/html
 # environment at container start — nginx's built-in entrypoint runs
 # envsubst on files under /etc/nginx/templates/ automatically.
 COPY nginx.conf.template /etc/nginx/templates/default.conf.template
+COPY 15-sanitize-backend-url.envsh /docker-entrypoint.d/15-sanitize-backend-url.envsh
+RUN chmod +x /docker-entrypoint.d/15-sanitize-backend-url.envsh
 
 ENV BACKEND_SCHEME=http
 ENV BACKEND_URL=backend:8000

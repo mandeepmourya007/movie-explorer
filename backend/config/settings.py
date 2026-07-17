@@ -9,6 +9,12 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
+def _strip_scheme(host):
+    """Tolerate FRONTEND_HOST/BACKEND_URL-style env vars being entered with
+    or without a leading http(s):// — we only ever want the bare hostname."""
+    return host.split("://", 1)[-1].rstrip("/") if host else host
+
 # --- Security ---
 SECRET_KEY = os.environ.get("SECRET_KEY", "dev-insecure-change-in-production-xyz123")
 DEBUG = os.environ.get("DEBUG", "True") == "True"
@@ -118,7 +124,7 @@ CORS_ALLOWED_ORIGINS = os.environ.get(
 
 # Render sets this automatically on the frontend service — wire it in so the
 # deployed frontend's origin is always allowed without manual config.
-FRONTEND_HOST = os.environ.get("FRONTEND_HOST")
+FRONTEND_HOST = _strip_scheme(os.environ.get("FRONTEND_HOST"))
 if FRONTEND_HOST:
     CORS_ALLOWED_ORIGINS.append(f"https://{FRONTEND_HOST}")
 

@@ -1,0 +1,15 @@
+#!/bin/sh
+# Tolerate BACKEND_URL being entered with or without a leading http(s):// —
+# nginx's proxy_pass template only ever wants the bare host[:port].
+# Must run (sourced, hence .envsh) before 20-envsubst-on-templates.sh so the
+# exported value is what gets substituted into the config.
+BACKEND_URL="${BACKEND_URL#http://}"
+BACKEND_URL="${BACKEND_URL#https://}"
+BACKEND_URL="${BACKEND_URL%/}"
+export BACKEND_URL
+
+# Use whatever DNS resolver this container actually has configured (Docker
+# Compose's embedded 127.0.0.11 locally, Render's real resolver in prod)
+# instead of racing multiple hardcoded resolvers in the nginx template.
+RESOLVER_IP="$(awk '/^nameserver/{print $2; exit}' /etc/resolv.conf)"
+export RESOLVER_IP

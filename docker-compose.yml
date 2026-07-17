@@ -11,9 +11,11 @@ services:
       - DJANGO_SUPERUSER_USERNAME=admin
       - DJANGO_SUPERUSER_EMAIL=admin@admin.com
       - DJANGO_SUPERUSER_PASSWORD=admin12345
+      - DB_PATH=/data/db.sqlite3
     volumes:
-      # Persist SQLite database across container restarts
-      - db_data:/app
+      # Persist SQLite database across container restarts. Scoped to /data
+      # (not /app) so this volume never shadows the app code baked into the image.
+      - db_data:/data
     expose:
       - "8000"
     healthcheck:
