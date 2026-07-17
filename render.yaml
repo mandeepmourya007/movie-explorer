@@ -19,6 +19,12 @@ services:
       # its public hostname only, no scheme (e.g. movie-villa-frontend-xxxx.onrender.com).
       - key: FRONTEND_HOST
         sync: false
+      - key: DJANGO_SUPERUSER_USERNAME
+        value: admin
+      - key: DJANGO_SUPERUSER_EMAIL
+        value: admin@admin.com
+      - key: DJANGO_SUPERUSER_PASSWORD
+        generateValue: true
 
   - type: web
     name: movie-villa-frontend
