@@ -1,0 +1,23 @@
+render.yaml
+  s_e7755fbbfcd2dd::t_770084c95bc07d 33-34,39
+frontend/nginx.conf.template
+  s_e7755fbbfcd2dd::t_b7d80f8edbd6fe 17-19,26-28
+frontend/Dockerfile
+  s_e7755fbbfcd2dd::t_72bc8f37463335 26-28,31
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "0477224f95cebfb4afbda5ee5badc44eb16b1122",
+  "prompts": {},
+  "sessions": {
+    "s_e7755fbbfcd2dd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9a1981c5-d0bc-434c-876c-18ebdeb8c81f",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "mandeepmourya007 <mandeepmourya007@gmail.com>"
+    }
+  }
+}
