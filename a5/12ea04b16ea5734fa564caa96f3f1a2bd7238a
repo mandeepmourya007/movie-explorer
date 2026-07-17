@@ -1,0 +1,30 @@
+backend/entrypoint.sh
+  s_e7755fbbfcd2dd::t_911eb3706aa77b 13-17
+render.yaml
+  s_e7755fbbfcd2dd::t_42cffd21c3056d 22-24,26-27
+  h_b3232c20134322 25
+docker-compose.yml
+  s_e7755fbbfcd2dd::t_a794b2463a68e6 11,13
+  h_b3232c20134322 12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "a512ea04b16ea5734fa564caa96f3f1a2bd7238a",
+  "prompts": {},
+  "humans": {
+    "h_b3232c20134322": {
+      "author": "mandeepmourya007 <mandeepmourya007@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_e7755fbbfcd2dd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9a1981c5-d0bc-434c-876c-18ebdeb8c81f",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "mandeepmourya007 <mandeepmourya007@gmail.com>"
+    }
+  }
+}
