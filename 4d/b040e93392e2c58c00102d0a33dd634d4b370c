@@ -1,0 +1,54 @@
+backend/config/settings.py
+  s_e7755fbbfcd2dd::t_e55810bd902f12 48
+  s_e7755fbbfcd2dd::t_95cd4e399b2a5f 104-109,119-123
+  s_e7755fbbfcd2dd::t_51ac4997a97875 79-80,84
+  s_e7755fbbfcd2dd::t_a5dc75baeb16f4 17-28
+  s_e7755fbbfcd2dd::t_6134273b8231bb 124
+frontend/Dockerfile
+  s_e7755fbbfcd2dd::t_e4d3e912d896bf 26-31
+backend/entrypoint.sh
+  s_e7755fbbfcd2dd::t_3a7dc66ab36d45 7-9,15
+frontend/src/views/MoviesView.vue
+  s_0854d001b82046::t_748edafc45307d 126
+  s_0854d001b82046::t_b1bc0aa7514049 60
+  s_0854d001b82046::t_470d5d17a7badd 107-116
+  s_0854d001b82046::t_f20e57a99f2fa1 89,101
+frontend/src/utils/debounce.ts
+  s_0854d001b82046::t_9958d406876ca2 1,3-6
+  s_0854d001b82046::t_abb133c664d95c 2,7
+backend/requirements.txt
+  s_e7755fbbfcd2dd::t_278923d5235952 7
+render.yaml
+  s_e7755fbbfcd2dd::t_f5b4f56f594403 1-41
+frontend/nginx.conf.template
+  s_e7755fbbfcd2dd::t_76df419d4abbf5 17,25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "4db040e93392e2c58c00102d0a33dd634d4b370c",
+  "prompts": {},
+  "humans": {
+    "h_b3232c20134322": {
+      "author": "mandeepmourya007 <mandeepmourya007@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_0854d001b82046": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2ddf7e2c-7b9e-432f-bb92-c155b05b7a2c",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "mandeepmourya007 <mandeepmourya007@gmail.com>"
+    },
+    "s_e7755fbbfcd2dd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9a1981c5-d0bc-434c-876c-18ebdeb8c81f",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "mandeepmourya007 <mandeepmourya007@gmail.com>"
+    }
+  }
+}
