@@ -30,8 +30,10 @@ services:
     dockerfilePath: ./Dockerfile
     dockerContext: .
     envVars:
+      - key: BACKEND_SCHEME
+        value: https
       - key: BACKEND_URL
         fromService:
           type: web
           name: movie-villa-backend
-          property: hostport
+          property: host
