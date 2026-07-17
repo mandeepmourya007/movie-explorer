@@ -57,6 +57,7 @@ import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { fetchDirectors, fetchGenres, fetchMovies } from '@/api/catalog'
 import type { DirectorMinimal, Genre, MovieFilters, MovieList } from '@/types'
+import { debounce } from '@/utils/debounce'
 import FilterBar from '@/components/FilterBar.vue'
 import MovieCard from '@/components/MovieCard.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
@@ -85,7 +86,7 @@ const filters = reactive<MovieFilters>({
 const currentPage = computed(() => filters.page ?? 1)
 const totalPages  = computed(() => Math.ceil(total.value / PAGE_SIZE))
 
-const load = async () => {
+const load = debounce(async () => {
   loading.value = true
   error.value = null
   try {
@@ -97,26 +98,22 @@ const load = async () => {
   } finally {
     loading.value = false
   }
-}
+}, 300)
 
 const goTo = (page: number) => { filters.page = page }
 
 // Sync filters → URL query params + debounced API call
-let timer: ReturnType<typeof setTimeout>
 watch(filters, () => {
-  clearTimeout(timer)
-  timer = setTimeout(() => {
-    router.replace({
-      query: {
-        ...(filters.search       ? { search: filters.search }             : {}),
-        ...(filters.genre_slug   ? { genre_slug: filters.genre_slug }     : {}),
-        ...(filters.director_slug? { director_slug: filters.director_slug}: {}),
-        ...(filters.release_year ? { release_year: String(filters.release_year) } : {}),
-        ...(filters.page && filters.page > 1 ? { page: String(filters.page) } : {}),
-      },
-    })
-    load()
-  }, 300)
+  router.replace({
+    query: {
+      ...(filters.search        ? { search: filters.search }              : {}),
+      ...(filters.genre_slug    ? { genre_slug: filters.genre_slug }      : {}),
+      ...(filters.director_slug ? { director_slug: filters.director_slug }: {}),
+      ...(filters.release_year  ? { release_year: String(filters.release_year) } : {}),
+      ...(filters.page && filters.page > 1 ? { page: String(filters.page) } : {}),
+    },
+  })
+  load()
 }, { deep: true })
 
 onMounted(async () => {
@@ -126,6 +123,6 @@ onMounted(async () => {
   ])
   genres.value    = genreData.results
   directors.value = directorData.results
-  await load()
+  load()
 })
 </script>

@@ -1,0 +1,41 @@
+services:
+  - type: web
+    name: movie-villa-backend
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /api/genres/
+    disk:
+      name: backend-data
+      mountPath: /app/data
+      sizeGB: 1
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: "*"
+      - key: DB_PATH
+        value: /app/data/db.sqlite3
+      - key: FRONTEND_HOST
+        fromService:
+          type: web
+          name: movie-villa-frontend
+          property: host
+
+  - type: web
+    name: movie-villa-frontend
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./frontend/Dockerfile
+    dockerContext: ./frontend
+    envVars:
+      - key: BACKEND_URL
+        fromService:
+          type: web
+          name: movie-villa-backend
+          property: hostport

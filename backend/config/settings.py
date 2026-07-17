@@ -14,6 +14,18 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "dev-insecure-change-in-production-xyz
 DEBUG = os.environ.get("DEBUG", "True") == "True"
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "*").split(",")
 
+# Render sets this automatically for every service — wire it in so the
+# backend's own public URL is always allowed without manual config.
+RENDER_EXTERNAL_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
+CSRF_TRUSTED_ORIGINS = [
+    origin for origin in os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",") if origin
+]
+if RENDER_EXTERNAL_HOSTNAME:
+    CSRF_TRUSTED_ORIGINS.append(f"https://{RENDER_EXTERNAL_HOSTNAME}")
+
 # --- Application definition ---
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -33,6 +45,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "corsheaders.middleware.CorsMiddleware",  # must be before CommonMiddleware
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -63,11 +76,12 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 # --- Database ---
-# SQLite for simplicity; swap to Postgres by setting DATABASE_URL in env.
+# SQLite for simplicity. DB_PATH lets deploys point it at a mounted
+# persistent disk (e.g. Render) so data survives redeploys/restarts.
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "NAME": os.environ.get("DB_PATH", str(BASE_DIR / "db.sqlite3")),
     }
 }
 
@@ -87,6 +101,12 @@ USE_TZ = True
 
 # --- Static files ---
 STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # --- CORS ---
@@ -95,6 +115,12 @@ CORS_ALLOW_ALL_ORIGINS = DEBUG
 CORS_ALLOWED_ORIGINS = os.environ.get(
     "CORS_ALLOWED_ORIGINS", "http://localhost:8080,http://localhost:5173"
 ).split(",")
+
+# Render sets this automatically on the frontend service — wire it in so the
+# deployed frontend's origin is always allowed without manual config.
+FRONTEND_HOST = os.environ.get("FRONTEND_HOST")
+if FRONTEND_HOST:
+    CORS_ALLOWED_ORIGINS.append(f"https://{FRONTEND_HOST}")
 
 # --- Django REST Framework ---
 REST_FRAMEWORK = {

@@ -23,7 +23,12 @@ RUN npx vue-tsc --noEmit && npm run build -- --mode production
 FROM nginx:alpine AS runtime
 
 COPY --from=build /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Templated so BACKEND_URL (host:port of the Django backend) can be
+# resolved from the environment at container start — nginx's built-in
+# entrypoint runs envsubst on files under /etc/nginx/templates/ automatically.
+COPY nginx.conf.template /etc/nginx/templates/default.conf.template
+
+ENV BACKEND_URL=backend:8000
 
 EXPOSE 80
 
