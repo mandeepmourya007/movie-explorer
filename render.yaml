@@ -15,11 +15,10 @@ services:
         value: "False"
       - key: ALLOWED_HOSTS
         value: "*"
+      # Set manually in the Render dashboard once the frontend service exists —
+      # its public hostname only, no scheme (e.g. movie-villa-frontend-xxxx.onrender.com).
       - key: FRONTEND_HOST
-        fromService:
-          type: web
-          name: movie-villa-frontend
-          property: host
+        sync: false
 
   - type: web
     name: movie-villa-frontend
@@ -32,8 +31,7 @@ services:
     envVars:
       - key: BACKEND_SCHEME
         value: https
+      # Set manually in the Render dashboard once the backend service exists —
+      # its public hostname only, no scheme (e.g. movie-villa-backend-xxxx.onrender.com).
       - key: BACKEND_URL
-        fromService:
-          type: web
-          name: movie-villa-backend
-          property: host
+        sync: false

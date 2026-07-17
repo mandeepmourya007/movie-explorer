@@ -2,6 +2,14 @@ server {
     listen 80;
     server_name _;
 
+    # Resolve the backend hostname per-request (via a public resolver) instead
+    # of once at nginx startup — a bad/unresolvable BACKEND_URL then yields a
+    # 502 on /api/ instead of crashing the whole container on boot.
+    # 127.0.0.11 is Docker Compose's embedded DNS (resolves service names like
+    # "backend" locally); 8.8.8.8/1.1.1.1 are the fallback for public hostnames
+    # (e.g. on Render, where BACKEND_URL is a real onrender.com domain).
+    resolver 127.0.0.11 8.8.8.8 1.1.1.1 ipv6=off valid=30s;
+
     root /usr/share/nginx/html;
     index index.html;
 
@@ -14,18 +22,20 @@ server {
 
     # Proxy API requests to Django backend
     location /api/ {
-        proxy_pass ${BACKEND_SCHEME}://${BACKEND_URL}/api/;
+        set $backend ${BACKEND_URL};
+        proxy_pass ${BACKEND_SCHEME}://$backend/api/;
         proxy_ssl_server_name on;
-        proxy_set_header Host ${BACKEND_URL};
+        proxy_set_header Host $backend;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     }
 
     # Proxy Swagger / admin requests
     location ~ ^/(api/docs|api/redoc|api/schema|admin)/ {
-        proxy_pass ${BACKEND_SCHEME}://${BACKEND_URL};
+        set $backend ${BACKEND_URL};
+        proxy_pass ${BACKEND_SCHEME}://$backend;
         proxy_ssl_server_name on;
-        proxy_set_header Host ${BACKEND_URL};
+        proxy_set_header Host $backend;
         proxy_set_header X-Real-IP $remote_addr;
     }
 
